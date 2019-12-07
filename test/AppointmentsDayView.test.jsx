@@ -2,11 +2,21 @@ import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
 
-import { Appointment, AppointmentsDayView } from '../src/Appointment';
+import { at } from '../src/sampleData';
+
+import { Appointment, AppointmentsDayView } from '../src/AppointmentsDayView';
 
 describe('Appointment', () => {
   let container;
-  let customer;
+  const customer = {
+    firstName: 'Ashley',
+    lastName: 'Bert',
+    phoneNumber: '123123123',
+    stylist: 'Josef',
+    service: 'Blow-dry',
+    notes: 'random notes',
+    startsAt: at(12)
+  };
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -14,17 +24,34 @@ describe('Appointment', () => {
 
   const render = component => ReactDOM.render(component, container);
 
-  it('renders the customer first name', () => {
-    customer = { firstName: 'Ashley' };
+  it('renders the customer last name', () => {
     render(<Appointment customer={customer} />);
-    expect(container.textContent).toMatch('Ashley');
+    expect(container.textContent).toMatch(customer.lastName);
   });
 
-  it('renders the customer first name', () => {
-    customer = { firstName: 'Jordan' };
+  it('renders the customer phone number', () => {
     render(<Appointment customer={customer} />);
+    expect(container.textContent).toMatch(customer.phoneNumber);
+  });
 
-    expect(container.textContent).toMatch('Jordan');
+  it('renders the stylist', () => {
+    render(<Appointment customer={customer} />);
+    expect(container.textContent).toMatch(customer.stylist);
+  });
+
+  it('renders the service', () => {
+    render(<Appointment customer={customer} />);
+    expect(container.textContent).toMatch(customer.service);
+  });
+
+  it('renders the notes', () => {
+    render(<Appointment customer={customer} />);
+    expect(container.textContent).toMatch(customer.notes);
+  });
+
+  it('renders the appointment heading with the time', () => {
+    render(<Appointment customer={customer} />);
+    expect(container.querySelector('h3').textContent).toMatch('12:00');
   });
 });
 
@@ -32,8 +59,14 @@ describe('AppointmentsDayView', () => {
   let container;
   const today = new Date();
   const appointments = [
-    { startsAt: today.setHours(12, 0), customer: { firstName: 'Ashley' } },
-    { startsAt: today.setHours(13, 0), customer: { firstName: 'Jordan' } }
+    {
+      startsAt: today.setHours(12, 0),
+      customer: { firstName: 'Ashley', lastName: 'Bert' }
+    },
+    {
+      startsAt: today.setHours(13, 0),
+      customer: { firstName: 'Jordan', lastName: 'Vee' }
+    }
   ];
 
   beforeEach(() => {
@@ -69,7 +102,7 @@ describe('AppointmentsDayView', () => {
 
   it('selects the first appointment by default', () => {
     render(<AppointmentsDayView appointments={appointments} />);
-    expect(container.textContent).toMatch('Ashley');
+    expect(container.textContent).toMatch(appointments[0].customer.lastName);
   });
 
   it('has a button element in each li', () => {
@@ -82,6 +115,6 @@ describe('AppointmentsDayView', () => {
     render(<AppointmentsDayView appointments={appointments} />);
     const button = container.querySelectorAll('button')[1];
     ReactTestUtils.Simulate.click(button);
-    expect(container.textContent).toMatch('Jordan');
+    expect(container.textContent).toMatch(appointments[1].customer.lastName);
   });
 });
