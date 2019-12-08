@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
-import ReactDOM from 'react-dom';
 
 import { at } from '../src/sampleData';
-
 import { Appointment, AppointmentsDayView } from '../src/AppointmentsDayView';
 
+import { createContainer } from './dom-manipulators';
+
 describe('Appointment', () => {
-  let container;
+  let container, render;
   const customer = {
     firstName: 'Ashley',
     lastName: 'Bert',
@@ -19,10 +19,8 @@ describe('Appointment', () => {
   };
 
   beforeEach(() => {
-    container = document.createElement('div');
+    ({ render, container } = createContainer());
   });
-
-  const render = component => ReactDOM.render(component, container);
 
   it('renders the customer last name', () => {
     render(<Appointment customer={customer} />);
@@ -51,12 +49,12 @@ describe('Appointment', () => {
 
   it('renders the appointment heading with the time', () => {
     render(<Appointment customer={customer} />);
-    expect(container.querySelector('h3').textContent).toMatch('12:00');
+    expect(container.querySelector('div > h3').textContent).toMatch('12:00');
   });
 });
 
 describe('AppointmentsDayView', () => {
-  let container;
+  let container, render;
   const today = new Date();
   const appointments = [
     {
@@ -70,10 +68,8 @@ describe('AppointmentsDayView', () => {
   ];
 
   beforeEach(() => {
-    container = document.createElement('div');
+    ({ render, container } = createContainer());
   });
-
-  const render = component => ReactDOM.render(component, container);
 
   it('renders a div with the right id', () => {
     render(<AppointmentsDayView appointments={[]} />);
